@@ -9,6 +9,6 @@ import com.aeonbank.librarysystem.domain.model.Loan;
 
 public interface LoanRepository extends JpaRepository<Loan, Long>, JpaSpecificationExecutor<Loan> {
 
-	Optional<Loan> findByIdAndReturnedDateIsNull(Long loanId);
+	//Optional<Loan> findByIdAndReturnedDateIsNull(Long loanId);
 	Optional<Loan> findByBookIdAndReturnedDateIsNull(Long bookId);
 }

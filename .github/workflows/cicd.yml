@@ -1,0 +1,54 @@
+name: AEON Bank Library System CI/CD with Maven
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Java 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Cache Maven dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-maven-
+
+      - name: Run Unit Tests
+        run: mvn clean install
+        continue-on-error: false  # Stops execution if tests fail
+
+      - name: Copy the artifact
+        run: cp target/library-system.jar library-system.jar
+
+      - name: Save the artifact
+        uses: actions/upload-artifact@main
+        with:
+          name: library-system
+          path: library-system.jar
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build & push Docker image
+        uses: mr-smithers-excellent/docker-build-push@v6
+        with:
+          image: chuasoonee/library-system
+          tags: latest, ${{ github.sha }}  # Adds commit SHA for better traceability
+          registry: docker.io
+          dockerfile: Dockerfile

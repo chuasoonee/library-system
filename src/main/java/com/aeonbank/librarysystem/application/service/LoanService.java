@@ -38,8 +38,8 @@ public class LoanService {
 
 		Book book = bookRepository.findById(bookId).orElseThrow(() -> new BookNotFoundException(bookId));
 
-		boolean isLoaned = loanRepository.findByBookIdAndReturnedDateIsNull(bookId).isPresent();
-		if (isLoaned) {
+		boolean isOnLoan = loanRepository.findByBookIdAndReturnedDateIsNull(bookId).isPresent();
+		if (isOnLoan) {
 			throw new BookAlreadyOnLoanException(bookId);
 		}
 

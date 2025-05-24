@@ -4,5 +4,6 @@ public record GetBookResponseDTO(
 	Long id,
 	String isbn,
 	String title,
-	String author
+	String author,
+	boolean isAvailable
 ) {}

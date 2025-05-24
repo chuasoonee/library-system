@@ -12,12 +12,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Borrower extends BaseModel {
 
-    @NotBlank
+	@Column(nullable = false)
     private String name;
 
     @NotBlank
     @Email
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     private String email;
     
     public Borrower(String name, String email) {

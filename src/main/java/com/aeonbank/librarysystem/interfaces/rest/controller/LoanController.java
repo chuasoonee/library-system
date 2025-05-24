@@ -22,6 +22,7 @@ import com.aeonbank.librarysystem.domain.model.LoanStatus;
 import com.aeonbank.librarysystem.interfaces.rest.dto.CreatedLoanRequestDTO;
 import com.aeonbank.librarysystem.interfaces.rest.dto.GetLoanResponseDTO;
 
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 
@@ -32,6 +33,7 @@ public class LoanController {
 
 	private final LoanService loanService;
 
+	@Operation(summary = "Borrow a book with a particular book id on behalf of a borrower", description = "Borrow a book with a particular book id on behalf of a borrower")
 	@PostMapping
 	public ResponseEntity<Void> borrowBook(@RequestBody @Valid CreatedLoanRequestDTO request) {
 
@@ -39,13 +41,14 @@ public class LoanController {
 		return ResponseEntity.created(URI.create("/loans/" + loan.getId())).build();
 	}
 
+	@Operation(summary = "Return a borrowed book on behalf of a borrower", description = "Return a borrowed book on behalf of a borrower")
 	@PatchMapping("/{loanId}")
 	public ResponseEntity<Void> returnBook(@PathVariable Long loanId) {
 
 		loanService.returnBook(loanId);
 		return ResponseEntity.ok().build();
 	}
-	
+
 	/**
 	 * Get all loans list API
 	 * 
@@ -55,6 +58,7 @@ public class LoanController {
 	 * @param pageable
 	 * @return
 	 */
+	@Operation(summary = "Get a list of loans records", description = "Returns a paginated list of all loans records in the library by default (without filters)")
 	@GetMapping
 	public ResponseEntity<Page<GetLoanResponseDTO>> getAllLoans(@RequestParam(required = false) String borrowerName,
 			@RequestParam(required = false) String borrowerEmail, @RequestParam(required = false) LoanStatus loanStatus,
