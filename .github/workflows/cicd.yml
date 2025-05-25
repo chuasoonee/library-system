@@ -39,11 +39,11 @@ jobs:
           name: library-system
           path: library-system.jar
 
-      - name: Log in to Docker Hub
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
+      #- name: Log in to Docker Hub
+      #  uses: docker/login-action@v3
+      #  with:
+      #    username: ${{ secrets.DOCKER_USERNAME }}
+      #    password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Build & push Docker image
         uses: mr-smithers-excellent/docker-build-push@v6
@@ -52,3 +52,7 @@ jobs:
           tags: latest, ${{ github.sha }}  # Adds commit SHA for better traceability
           registry: docker.io
           dockerfile: Dockerfile-prod
+          pushImage: true
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
