@@ -21,7 +21,7 @@ public class SwaggerConfig {
 			return null;
 		}
 
-		return new OpenAPI().info(new Info().title("Aeon Bank Library System API")
+		return new OpenAPI().info(new Info().title("Aeon Bank Library System API (" + activeProfile + ")")
 				.description("API Documentation for managing books and loans").version("1.0"));
 	}
 }
