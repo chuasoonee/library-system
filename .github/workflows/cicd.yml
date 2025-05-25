@@ -51,4 +51,4 @@ jobs:
           image: chuasoonee/library-system
           tags: latest, ${{ github.sha }}  # Adds commit SHA for better traceability
           registry: docker.io
-          dockerfile: Dockerfile
+          dockerfile: Dockerfile-prod
