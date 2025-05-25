@@ -21,7 +21,7 @@ spec:
     spec:
       containers:
       - name: library-system
-        image: "$ECR_URL:latest"
+        image: "$IMAGE"
         ports:
         - containerPort: 8080
         readinessProbe:

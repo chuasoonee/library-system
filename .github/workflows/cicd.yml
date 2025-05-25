@@ -67,9 +67,8 @@ jobs:
       - name: Build & push Docker image for Staging
         if: github.ref == 'refs/heads/staging'
         run: |
-          docker build -t ${{ secrets.ECR_REPO_STAGING }}:latest -f Dockerfile-staging .
-          docker tag ${{ secrets.ECR_REPO_STAGING }}:latest ${{ secrets.ECR_REPO_STAGING }}:${{ github.sha }}
-          docker push ${{ secrets.ECR_REPO_STAGING }}:latest
+          docker build -t ${{ secrets.ECR_REPO_STAGING }}:${{ github.sha }} -f Dockerfile-staging .
+          docker tag ${{ secrets.ECR_REPO_STAGING }}:${{ github.sha }}
           docker push ${{ secrets.ECR_REPO_STAGING }}:${{ github.sha }}
 
       # Build & Push to AWS ECR (Production)
@@ -93,18 +92,13 @@ jobs:
           aws eks update-kubeconfig --region ap-southeast-5 --name ${{ secrets.EKS_CLUSTER_STAGING }}
           kubectl config set-context --current --namespace=staging
 
-      - name: Apply Kubernetes Deployment
-        run: |
-          envsubst < k8s/staging/deployment.yaml | kubectl apply -f -
-        env:
-          ECR_URL: ${{ secrets.ECR_REPO }}
-
       # Apply Kubernetes Deployment & Service for Staging
       - name: Deploy to Kubernetes (Staging)
         if: github.ref == 'refs/heads/staging'
         run: |
           kubectl apply -f k8s/staging/service.yaml
-          kubectl apply -f k8s/staging/deployment.yaml
+          export IMAGE=${{ secrets.ECR_REPO_STAGING }}:${{ github.sha }}
+          envsubst < k8s/staging/deployment.yaml | kubectl apply -f -
 
       # Apply Kubernetes Deployment & Service for Production
       #- name: Deploy to Kubernetes (Production)
