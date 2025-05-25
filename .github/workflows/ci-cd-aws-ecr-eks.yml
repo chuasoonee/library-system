@@ -1,4 +1,4 @@
-name: AEON Bank Library System CI/CD with Maven
+name: AWS ECR & EKS CI/CD
 
 on:
   push:

@@ -1,4 +1,4 @@
-name: AEON Bank Library System CI/CD with Maven
+name: Docker Hub CI/CD & Local Deploy
 
 on:
   push:
