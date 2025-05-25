@@ -87,7 +87,7 @@ jobs:
         with:
           version: 'v1.31.0' # Default is latest stable version
         id: install
-		
+        
       - name: Update kube config
         run: |
           aws eks update-kubeconfig --region ap-southeast-5 --name ${{ secrets.EKS_CLUSTER_STAGING }}
