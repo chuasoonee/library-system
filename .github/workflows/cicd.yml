@@ -95,7 +95,7 @@ jobs:
 
       - name: Apply Kubernetes Deployment
         run: |
-          envsubst < k8s/deployment.yaml | kubectl apply -f -
+          envsubst < k8s/staging/deployment.yaml | kubectl apply -f -
         env:
           ECR_URL: ${{ secrets.ECR_REPO }}
 
