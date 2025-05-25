@@ -34,7 +34,7 @@ public class Book extends BaseModel {
 	
 	@Setter
     @Transient
-    private boolean available;
+    private boolean isAvailable;
 
 
 	public Book(String isbn, String title, String author) {

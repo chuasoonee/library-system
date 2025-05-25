@@ -37,7 +37,7 @@ public class BorrowerServiceTests {
 	}
 
 	@Test
-	public void registerBorrower_WhenEmailNotRegistered_ShouldSaveBorrower() {
+	public void BorrowerService_RegisterBorrower_WhenEmailNotRegistered_SaveBorrower() {
 		// Arrange
 		when(borrowerRepository.findByEmail(borrower.getEmail())).thenReturn(Optional.empty());
 		when(borrowerRepository.save(any(Borrower.class))).thenReturn(borrower);
@@ -52,7 +52,7 @@ public class BorrowerServiceTests {
 	}
 
 	@Test
-	public void registerBorrower_WhenEmailAlreadyRegistered_ShouldThrowException() {
+	public void BorrowerService_RegisterBorrower_WhenEmailAlreadyRegistered_ThrowException() {
 		// Arrange
 		when(borrowerRepository.findByEmail(borrower.getEmail())).thenReturn(Optional.of(borrower));
 

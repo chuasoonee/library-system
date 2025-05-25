@@ -42,7 +42,7 @@ public class LoanController {
 	}
 
 	@Operation(summary = "Return a borrowed book on behalf of a borrower", description = "Return a borrowed book on behalf of a borrower")
-	@PatchMapping("/{loanId}")
+	@PatchMapping("/{loanId}/return")
 	public ResponseEntity<Void> returnBook(@PathVariable Long loanId) {
 
 		loanService.returnBook(loanId);

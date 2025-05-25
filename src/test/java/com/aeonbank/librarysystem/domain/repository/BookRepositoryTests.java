@@ -1,5 +1,7 @@
 package com.aeonbank.librarysystem.domain.repository;
 
+import java.util.List;
+
 import org.assertj.core.api.Assertions;
 import org.assertj.core.groups.Tuple;
 import org.junit.jupiter.api.BeforeEach;
@@ -56,6 +58,13 @@ public class BookRepositoryTests {
 		Book returnBook = bookRepository.findFirstByIsbn(book1.getIsbn());
 		Assertions.assertThat(returnBook).isNotNull();
 		Assertions.assertThat(returnBook.getId()).isGreaterThan(0);
+	}
+	
+	@Test
+	public void BookRepository_FindAll_ReturnBookInList() {
+		List<Book> returnBook = bookRepository.findAll();
+		Assertions.assertThat(returnBook).isNotNull();
+		Assertions.assertThat(returnBook.size()).isEqualTo(3);
 	}
 
 	@Test

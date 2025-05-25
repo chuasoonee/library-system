@@ -48,28 +48,23 @@ public class BookServiceTests {
 	}
 
 	@Test
-	public void registerBook_WhenBookDoesNotExist_ShouldSaveBook() {
-		// Arrange
+	public void BookService_RegisterBook_WhenBookDoesNotExist_SaveBook() {
 		String normalizedIsbn = IsbnUtils.normalize(book.getIsbn());
 		when(bookRepository.findFirstByIsbn(normalizedIsbn)).thenReturn(null);
 		when(bookRepository.save(any(Book.class))).thenReturn(book);
 
-		// Act
 		Book savedBook = bookService.registerBook(book.getIsbn(), book.getTitle(), book.getAuthor());
 
-		// Assert
 		assertThat(savedBook).isNotNull();
 		assertThat(savedBook.getIsbn()).isEqualTo(normalizedIsbn);
 		verify(bookRepository, times(1)).save(any(Book.class));
 	}
 
 	@Test
-	public void registerBook_WhenBookExistsWithDifferentDetails_ShouldThrowInvalidBookException() {
-		// Arrange
+	public void BookService_RegisterBook_WhenBookExistsWithDifferentDetails_ThrowInvalidBookException() {
 		Book existingBook = new Book("9781443456623", "Different Title", "Different Author");
 		when(bookRepository.findFirstByIsbn(book.getIsbn())).thenReturn(existingBook);
 
-		// Act & Assert
 		assertThatThrownBy(() -> bookService.registerBook(book.getIsbn(), book.getTitle(), book.getAuthor()))
 				.isInstanceOf(InvalidBookException.class).hasMessageContaining(book.getIsbn());
 
@@ -77,33 +72,38 @@ public class BookServiceTests {
 	}
 
 	@Test
-	public void registerBook_WhenBookExistsWithSameDetails_ShouldNotThrowException() {
-		// Arrange
+	public void BookService_RegisterBook_WhenBookExistsWithSameDetails_NotThrowException() {
 		when(bookRepository.findFirstByIsbn(book.getIsbn())).thenReturn(book);
 		when(bookRepository.save(any(Book.class))).thenReturn(book);
 
-		// Act
 		Book savedBook = bookService.registerBook(book.getIsbn(), book.getTitle(), book.getAuthor());
 
-		// Assert
 		assertThat(savedBook).isNotNull();
 		assertThat(savedBook.getIsbn()).isEqualTo(book.getIsbn());
 		verify(bookRepository, times(1)).save(any(Book.class));
 	}
 
+	@Test
+	public void BookService_GetAllBooks_ReturnAllBooks() {
+		when(bookRepository.findAll())
+				.thenReturn(List.of(book));
+
+		List<Book> allBooks = bookService.getAllBooks();
+
+		assertThat(allBooks).isNotNull();
+		assertThat(allBooks.size()).isEqualTo(1);
+	}
+
 	@SuppressWarnings("unchecked")
 	@Test
-	public void getAllBooks_ShouldReturnFilteredBooks() {
-		// Arrange
+	public void BookService_GetBooks_ReturnFilteredBooks() {
 		Pageable pageable = PageRequest.of(0, 10);
 
 		when(bookRepository.findAll(any(Specification.class), any(Pageable.class)))
 				.thenReturn(new PageImpl<>(List.of(book)));
 
-		// Act
 		Page<Book> result = bookService.getAllBooks(book.getIsbn(), book.getTitle(), book.getAuthor(), null, pageable);
 
-		// Assert
 		assertThat(result).isNotNull();
 		assertThat(result.getContent()).containsExactly(book);
 	}

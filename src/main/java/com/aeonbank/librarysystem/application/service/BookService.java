@@ -1,5 +1,7 @@
 package com.aeonbank.librarysystem.application.service;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -35,13 +37,23 @@ public class BookService {
 		return bookRepository.save(new Book(normalizedIsbn, title, author));
 	}
 
+	public List<Book> getAllBooks() {
+
+		List<Book> allBooks = bookRepository.findAll();
+		allBooks.forEach(book -> {
+			boolean isOnLoan = loanRepository.findByBookIdAndReturnedDateIsNull(book.getId()).isPresent();
+			book.setAvailable(!isOnLoan); // true = available, false = on loan
+		});
+		return allBooks;
+	}
+
 	public Page<Book> getAllBooks(String isbn, String title, String author, LoanStatus loanStatus, Pageable pageable) {
 
 		Specification<Book> spec = BookSpecifications.withFilters(isbn, title, author, loanStatus);
 		Page<Book> books = bookRepository.findAll(spec, pageable);
 		books.forEach(book -> {
-			boolean isLoaned = loanRepository.findByBookIdAndReturnedDateIsNull(book.getId()).isPresent();
-			book.setAvailable(!isLoaned); // true = available, false = on loan
+			boolean isOnLoan = loanRepository.findByBookIdAndReturnedDateIsNull(book.getId()).isPresent();
+			book.setAvailable(!isOnLoan); // true = available, false = on loan
 		});
 		return books;
 	}

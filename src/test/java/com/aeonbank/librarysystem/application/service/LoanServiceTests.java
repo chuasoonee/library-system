@@ -67,7 +67,7 @@ public class LoanServiceTests {
 	}
 
 	@Test
-	public void loanBook_WhenBorrowerNotFound_ShouldThrowException() {
+	public void LoanService_LoanBook_WhenBorrowerNotFound_ThrowException() {
 		when(borrowerRepository.findById(anyLong())).thenReturn(Optional.empty());
 
 		assertThatThrownBy(() -> loanService.loanBook(1L, 2L)).isInstanceOf(BorrowerNotFoundException.class)
@@ -77,7 +77,7 @@ public class LoanServiceTests {
 	}
 
 	@Test
-	public void loanBook_WhenBookNotFound_ShouldThrowException() {
+	public void LoanService_LoanBook_WhenBookNotFound_ThrowException() {
 		when(borrowerRepository.findById(anyLong())).thenReturn(Optional.of(borrower));
 		when(bookRepository.findById(anyLong())).thenReturn(Optional.empty());
 
@@ -88,7 +88,7 @@ public class LoanServiceTests {
 	}
 
 	@Test
-	public void loanBook_WhenBookAlreadyOnLoan_ShouldThrowException() {
+	public void LoanService_LoanBook_WhenBookAlreadyOnLoan_ThrowException() {
 		when(borrowerRepository.findById(anyLong())).thenReturn(Optional.of(borrower));
 		when(bookRepository.findById(anyLong())).thenReturn(Optional.of(book));
 		when(loanRepository.findByBookIdAndReturnedDateIsNull(anyLong())).thenReturn(Optional.of(onLoan));
@@ -100,7 +100,7 @@ public class LoanServiceTests {
 	}
 
 	@Test
-	public void loanBook_WhenConditionsAreMet_ShouldSaveLoan() {
+	public void LoanService_LoanBook_WhenConditionsAreMet_SaveLoan() {
 		when(borrowerRepository.findById(anyLong())).thenReturn(Optional.of(borrower));
 		when(bookRepository.findById(anyLong())).thenReturn(Optional.of(book));
 		when(loanRepository.findByBookIdAndReturnedDateIsNull(anyLong())).thenReturn(Optional.empty());
@@ -115,7 +115,17 @@ public class LoanServiceTests {
 	}
 
 	@Test
-	public void returnBook_WhenLoanNotFound_ShouldThrowException() {
+	public void LoanService_ReturnBook_WhenConditionsAreMet_UpdateLoan() {
+		when(loanRepository.findById(anyLong())).thenReturn(Optional.of(onLoan));
+
+		loanService.returnBook(1L);
+
+		assertThat(onLoan.getReturnedDate()).isNotNull();
+		verify(loanRepository, times(1)).save(onLoan);
+	}
+
+	@Test
+	public void LoanService_ReturnBook_WhenLoanNotFound_ThrowException() {
 		when(loanRepository.findById(anyLong())).thenReturn(Optional.empty());
 
 		assertThatThrownBy(() -> loanService.returnBook(1L)).isInstanceOf(LoanNotFoundException.class)
@@ -125,7 +135,7 @@ public class LoanServiceTests {
 	}
 
 	@Test
-	public void returnBook_WhenBookAlreadyReturned_ShouldThrowException() {
+	public void LoanService_ReturnBook_WhenBookAlreadyReturned_ThrowException() {
 		onLoan.returnBook();
 		when(loanRepository.findById(anyLong())).thenReturn(Optional.of(onLoan));
 
@@ -136,17 +146,7 @@ public class LoanServiceTests {
 	}
 
 	@Test
-	public void returnBook_WhenConditionsAreMet_ShouldUpdateLoan() {
-		when(loanRepository.findById(anyLong())).thenReturn(Optional.of(onLoan));
-
-		loanService.returnBook(1L);
-
-		assertThat(onLoan.getReturnedDate()).isNotNull();
-		verify(loanRepository, times(1)).save(onLoan);
-	}
-
-	@Test
-	public void getAllLoans_ShouldReturnFilteredLoans() {
+	public void LoanService_GetLoans_ReturnFilteredLoans() {
 		
 		Pageable pageable = PageRequest.of(0, 10);
 		Page<Loan> loans = new PageImpl<>(List.of(onLoan));
