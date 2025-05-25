@@ -33,7 +33,7 @@ jobs:
       - name: Build & push Docker image
         uses: mr-smithers-excellent/docker-build-push@v6
         with:
-          image: ${{ secrets.DOCKER_IMAGE }}
+          image: ${{ secrets.DOCKER_REPO }}
           tags: latest, ${{ github.sha }}  # Adds commit SHA for better traceability
           registry: docker.io
           dockerfile: Dockerfile-prod
