@@ -49,7 +49,8 @@ public class BookService {
 
 	public Page<Book> getAllBooks(String isbn, String title, String author, LoanStatus loanStatus, Pageable pageable) {
 
-		Specification<Book> spec = BookSpecifications.withFilters(isbn, title, author, loanStatus);
+		String normalizedIsbn = IsbnUtils.normalize(isbn);
+		Specification<Book> spec = BookSpecifications.withFilters(normalizedIsbn, title, author, loanStatus);
 		Page<Book> books = bookRepository.findAll(spec, pageable);
 		books.forEach(book -> {
 			boolean isOnLoan = loanRepository.findByBookIdAndReturnedDateIsNull(book.getId()).isPresent();
