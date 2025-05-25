@@ -48,8 +48,7 @@ public class LoanService {
 
 	public void returnBook(Long loanId) {
 		
-		Loan loan = loanRepository.findById(loanId)
-				.orElseThrow(() -> new LoanNotFoundException(loanId));
+		Loan loan = loanRepository.findById(loanId).orElseThrow(() -> new LoanNotFoundException(loanId));
 		if (loan.getReturnedDate() != null) {
 			throw new BookAlreadyReturnedException(loanId);
 		}

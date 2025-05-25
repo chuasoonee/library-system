@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - staging
 
 jobs:
   build:
@@ -30,10 +31,23 @@ jobs:
         run: mvn clean install || echo "Unit Tests failed!"
         continue-on-error: false  # Stops execution if tests fail
 
-      - name: Build & push Docker image
+      - name: Build & push Docker image for Staging
+        if: github.ref == 'refs/heads/staging'
         uses: mr-smithers-excellent/docker-build-push@v6
         with:
-          image: ${{ secrets.DOCKER_REPO }}
+          image: ${{ secrets.DOCKER_REPO_STAGING }}
+          tags: latest, ${{ github.sha }}  # Adds commit SHA for better traceability
+          registry: docker.io
+          dockerfile: Dockerfile-staging
+          pushImage: true
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          
+        name: Build & push Docker image for Production
+        if: github.ref == 'refs/heads/main'
+        uses: mr-smithers-excellent/docker-build-push@v6
+        with:
+          image: ${{ secrets.DOCKER_REPO_PRODUCTION }}
           tags: latest, ${{ github.sha }}  # Adds commit SHA for better traceability
           registry: docker.io
           dockerfile: Dockerfile-prod
