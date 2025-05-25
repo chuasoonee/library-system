@@ -93,6 +93,12 @@ jobs:
           aws eks update-kubeconfig --region ap-southeast-5 --name ${{ secrets.EKS_CLUSTER_STAGING }}
           kubectl config set-context --current --namespace=staging
 
+      - name: Apply Kubernetes Deployment
+        run: |
+          envsubst < k8s/deployment.yaml | kubectl apply -f -
+        env:
+          ECR_URL: ${{ secrets.ECR_REPO }}
+
       # Apply Kubernetes Deployment & Service for Staging
       - name: Deploy to Kubernetes (Staging)
         if: github.ref == 'refs/heads/staging'
