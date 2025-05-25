@@ -67,8 +67,8 @@ jobs:
       - name: Build & push Docker image for Staging
         if: github.ref == 'refs/heads/staging'
         run: |
-          docker build -t ${{ secrets.ECR_REPO_STAGING }}:${{ github.sha }} -f Dockerfile-staging .
-          docker tag ${{ secrets.ECR_REPO_STAGING }}:${{ github.sha }}
+          docker build -t library-system -f Dockerfile-staging .
+          docker tag library-system ${{ secrets.ECR_REPO_STAGING }}:${{ github.sha }}
           docker push ${{ secrets.ECR_REPO_STAGING }}:${{ github.sha }}
 
       # Build & Push to AWS ECR (Production)
