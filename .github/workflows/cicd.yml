@@ -27,10 +27,20 @@ jobs:
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-maven-
 
-      - name: Run Security Scan with Trivy
+      - name: Run Security Scan with Trivy for Staging
+        if: github.ref == 'refs/heads/staging'
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: ${{ secrets.DOCKER_REPO }}:latest
+          image-ref: ${{ secrets.DOCKER_REPO_STAGING }}:latest
+          format: table
+          exit-code: 1
+          severity: HIGH,CRITICAL
+          
+      - name: Run Security Scan with Trivy for Produiction
+        if: github.ref == 'refs/heads/main'
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: ${{ secrets.DOCKER_REPO_PRODUCTION }}:latest
           format: table
           exit-code: 1
           severity: HIGH,CRITICAL
