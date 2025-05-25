@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - staging
+      #- main
 
 jobs:
   build:
@@ -51,6 +52,14 @@ jobs:
           docker build -t library-system -f Dockerfile-staging .
           docker tag library-system ${{ secrets.ECR_REPO_STAGING }}:${{ github.sha }}
           docker push ${{ secrets.ECR_REPO_STAGING }}:${{ github.sha }}
+          
+      # Build & Push to AWS ECR (Production)
+      #- name: Build & push Docker image for Production
+      #  if: github.ref == 'refs/heads/main'
+      #  run: |
+      #    docker build -t library-system -f Dockerfile-staging .
+      #    docker tag library-system ${{ secrets.ECR_REPO_PRODUCTION }}:${{ github.sha }}
+      #    docker push ${{ secrets.ECR_REPO_STAGING }}:${{ github.sha }}
 
       # Install kubectl
       - name: Install kubectl
@@ -71,3 +80,11 @@ jobs:
           kubectl apply -f k8s/staging/service.yaml
           export IMAGE=${{ secrets.ECR_REPO_STAGING }}:${{ github.sha }}
           envsubst < k8s/staging/deployment.yaml | kubectl apply -f -
+          
+      # Apply Kubernetes Deployment & Service for Production
+      #- name: Deploy to Kubernetes (Production)
+      #  if: github.ref == 'refs/heads/main'
+      #  run: |
+      #    kubectl apply -f k8s/prod/service.yaml
+      #    export IMAGE=${{ secrets.ECR_REPO_PRODUCTION }}:${{ github.sha }}
+      #    envsubst < k8s/prod/deployment.yaml | kubectl apply -f -
