@@ -29,32 +29,24 @@ public class BorrowerRepositoryTests {
 
 	@Test
 	public void BorrowerRepository_FindByEmail_ReturnsBorrower() {
-		// Act
 		Optional<Borrower> foundBorrower = borrowerRepository.findByEmail("chuasoonee@yahoo.com");
 
-		// Assert
 		Assertions.assertThat(foundBorrower).isPresent();
 		Assertions.assertThat(foundBorrower.get().getEmail()).isEqualTo("chuasoonee@yahoo.com");
 	}
 
 	@Test
 	public void BorrowerRepository_FindByEmail_ReturnsEmptyOptional() {
-		// Act
 		Optional<Borrower> foundBorrower = borrowerRepository.findByEmail("nonexistent@aeonbank.com");
-
-		// Assert
+		
 		Assertions.assertThat(foundBorrower).isEmpty();
 	}
 
 	@Test
 	public void BorrowerRepository_Save_ReturnsSavedBorrower() {
-		// Arrange
 		Borrower newBorrower = new Borrower("Adrian Tee", "adrian.tee@aeonbank.com");
-
-		// Act
 		Borrower savedBorrower = borrowerRepository.save(newBorrower);
 
-		// Assert
 		Assertions.assertThat(savedBorrower).isNotNull();
 		Assertions.assertThat(savedBorrower.getId()).isNotNull();
 		Assertions.assertThat(savedBorrower.getEmail()).isEqualTo("adrian.tee@aeonbank.com");
@@ -62,20 +54,16 @@ public class BorrowerRepositoryTests {
 
 	@Test
 	public void BorrowerRepository_FindById_ReturnsBorrower() {
-		// Act
 		Optional<Borrower> foundBorrower = borrowerRepository.findById(borrower.getId());
 
-		// Assert
 		Assertions.assertThat(foundBorrower).isPresent();
 		Assertions.assertThat(foundBorrower.get().getName()).isEqualTo("Chua Soon Ee");
 	}
 
 	@Test
 	public void BorrowerRepository_FindById_ReturnsEmptyOptional() {
-		// Act
 		Optional<Borrower> foundBorrower = borrowerRepository.findById(999L); // Non-existent ID
 
-		// Assert
 		Assertions.assertThat(foundBorrower).isEmpty();
 	}
 }
