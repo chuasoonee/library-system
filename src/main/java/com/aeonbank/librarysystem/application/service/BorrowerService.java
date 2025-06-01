@@ -3,6 +3,7 @@ package com.aeonbank.librarysystem.application.service;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.aeonbank.librarysystem.domain.model.Borrower;
 import com.aeonbank.librarysystem.domain.repository.BorrowerRepository;
@@ -12,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class BorrowerService {
 
 	private final BorrowerRepository borrowerRepository;
